@@ -18,11 +18,11 @@ use App\Http\Controllers\BkashRefundController;
 Route::controller(BkashPaymentController::class)
     ->group(function () {
         Route::get('/', 'index');
-        Route::get('/get-token', 'getToken')->name('bkash-get-token');
-        Route::get('/create-payment', 'createPayment')->name('bkash-create-payment');
-        Route::post('/execute-payment', 'executePayment')->name('bkash-execute-payment');
-        Route::get('/query-payment', 'queryPayment')->name('bkash-query-payment');
-        Route::post('/success', 'bkashSuccess')->name('bkash-success');
+        Route::get('/get-token', 'getToken')->name('bkash.get.token');
+        Route::get('/make-payment', 'createPayment')->name('bkash.make.payment');
+        Route::post('/execute-payment', 'executePayment')->name('bkash.execute.payment');
+        Route::get('/query-payment', 'queryPayment')->name('bkash.query.payment');
+        Route::post('/success', 'bkashSuccess')->name('bkash.success');
     });
 
 // Refund Routes for bKash

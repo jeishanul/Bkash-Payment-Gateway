@@ -69,7 +69,7 @@
     function BkashPayment() {
         // get bkash token
         $.ajax({
-            url: "{{ route('bkash-get-token') }}",
+            url: "{{ route('bkash.get.token') }}",
             type: 'GET',
             contentType: 'application/json',
             success: function(data) {
@@ -95,7 +95,7 @@
 
         executeRequestOnAuthorization: function(request) {
             $.ajax({
-                url: '{{ route('bkash-execute-payment') }}',
+                url: '{{ route('bkash.execute.payment') }}',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -109,7 +109,7 @@
                             bKash.execute().onError();
                         }
                     } else {
-                        $.get('{{ route('bkash-query-payment') }}', {
+                        $.get('{{ route('bkash.query.payment') }}', {
                             payment_info: {
                                 payment_id: paymentID
                             }
@@ -137,7 +137,7 @@
         // because of createRequest function finds amount from this request
         request['amount'] = 99; // max two decimal points allowed
         $.ajax({
-            url: '{{ route('bkash-create-payment') }}',
+            url: '{{ route('bkash.make.payment') }}',
             data: {
                 "amount": 99,
                 "_token": "{{ csrf_token() }}",
@@ -161,7 +161,7 @@
     }
 
     function BkashSuccess(data) {
-        $.post('{{ route('bkash-success') }}', {
+        $.post('{{ route('bkash.success') }}', {
             payment_info: data
         }, function(res) {
             location.reload()

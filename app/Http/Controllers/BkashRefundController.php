@@ -11,12 +11,8 @@ class BkashRefundController extends Controller
 
     public function __construct()
     {
-        // You can import it from your Database
-        $bkash_app_key = '5tunt4masn6pv2hnvte1sb5n3j'; // bKash Merchant API APP KEY
-        $bkash_base_url = 'https://checkout.sandbox.bka.sh/v1.2.0-beta'; // For Live Production URL: https://checkout.pay.bka.sh/v1.2.0-beta
-
-        $this->app_key = $bkash_app_key;
-        $this->base_url = $bkash_base_url;
+        $this->app_key = env('BKASH_APP_KEY');
+        $this->base_url = env('BKASH_BASE_URL');
     }
 
     public function refund(Request $request)
