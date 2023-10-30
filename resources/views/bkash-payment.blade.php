@@ -19,19 +19,6 @@
         height: 100vh;
     }
 
-    input {
-        height: 2rem;
-        border: 1px solid #e3e3e3;
-        border-radius: 5px;
-        padding: 5px 15px;
-    }
-
-    input:focus {
-        outline: none !important;
-        border-color: #719ECE;
-        box-shadow: 0 0 10px #719ECE;
-    }
-
     button {
         background-color: #585883;
         padding: 11px 25px;
@@ -56,15 +43,6 @@
         border-radius: 5px;
     }
 
-    .success-message {
-        position: absolute;
-        margin-bottom: 100px;
-        color: green;
-        background-color: #0080001a;
-        padding: 10px 20px;
-        border-radius: 5px;
-    }
-
     span {
         position: absolute;
         margin-top: 52px;
@@ -75,9 +53,12 @@
 
 <body>
     <div class="container">
-        <input type="number" name="amount" placeholder="Enter your amount">
+        <div class="error-message" id="error-message" style="display: none">
+            Please use valid credential for bkash
+        </div>
+        <img src="{{ asset('loader.gif') }}" width="50" style="display: none" id="loader">
         <button id="bKash_button" onclick="BkashPayment()">
-            Pay
+            Pay with Bkash
         </button>
     </div>
 </body>
@@ -91,9 +72,13 @@
             url: "{{ route('bkash-get-token') }}",
             type: 'GET',
             contentType: 'application/json',
-            success: function(data) {},
-            error: function(err) {
-                console.log(err);
+            success: function(data) {
+                if (data.status == 'fail') {
+                    $('#error-message').show();
+                } else {
+                    $('#loader').show();
+                    $('#bKash_button').hide();
+                }
             }
         });
     }
@@ -121,7 +106,6 @@
                         if (data.paymentID != null) {
                             BkashSuccess(data);
                         } else {
-                            showErrorMessage(data);
                             bKash.execute().onError();
                         }
                     } else {
@@ -149,15 +133,13 @@
     });
 
     function createPayment(request) {
-
         // Amount already checked and verified by the controller
         // because of createRequest function finds amount from this request
         request['amount'] = 99; // max two decimal points allowed
-        console.log(request);
         $.ajax({
             url: '{{ route('bkash-create-payment') }}',
             data: {
-                "amount": 900,
+                "amount": 99,
                 "_token": "{{ csrf_token() }}",
 
             },
@@ -173,7 +155,6 @@
                 }
             },
             error: function(err) {
-                showErrorMessage(err.responseJSON);
                 bKash.create().onError();
             }
         });
@@ -185,25 +166,5 @@
         }, function(res) {
             location.reload()
         });
-    }
-
-    function showErrorMessage(response) {
-        let message = 'Unknown Error';
-
-        if (response.hasOwnProperty('errorMessage')) {
-            let errorCode = parseInt(response.errorCode);
-            let bkashErrorCode = [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014,
-                2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030,
-                2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044, 2045, 2046,
-                2047, 2048, 2049, 2050, 2051, 2052, 2053, 2054, 2055, 2056, 2057, 2058, 2059, 2060, 2061, 2062,
-                2063, 2064, 2065, 2066, 2067, 2068, 2069, 503,
-            ];
-
-            if (bkashErrorCode.includes(errorCode)) {
-                message = response.errorMessage
-            }
-        }
-
-        // Swal.fire("Payment Failed!", message, "error");
     }
 </script>
